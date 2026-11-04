@@ -160,5 +160,14 @@ class NoFindingsInRepo(unittest.TestCase):
                 self.assertTrue(ip.startswith(doc) or ip in public, f"{ip} in {path.relative_to(ROOT)}")
 
 
+class NoPlaceholders(unittest.TestCase):
+    """Install commands must work when copied: no <owner>-style placeholders in the README."""
+
+    def test_readme_has_real_urls(self):
+        text = (ROOT / "README.md").read_text()
+        self.assertNotIn("<owner>", text)
+        self.assertIn("github.com/joelhagvall/shodan-cert-report", text)
+
+
 if __name__ == "__main__":
     unittest.main()
