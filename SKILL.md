@@ -35,7 +35,7 @@ The two page scripts do the reading: `scripts/shodan-batch.js` runs a list of se
 
 | Agent | How |
 |---|---|
-| Claude Code with Claude in Chrome | Open a shodan.io tab in the user's Chrome. Paste a script's text into the JavaScript tool, then call `window.__run([...])` and poll `window.__done && JSON.stringify(window.__res)` in later calls with a wait under 25 s. If the extension drops ("Browser extension is not connected"), ask the user to reconnect it; after a reconnect, open a new tab. Navigating the tab mid-run aborts the script. |
+| Claude Code with Claude in Chrome | Open a shodan.io tab in the user's Chrome. Paste a script's text into the JavaScript tool, then call `window.__run([...])` and poll `window.__done && JSON.stringify(window.__res)` in later calls with a wait under 25 s. If the extension drops ("Browser extension is not connected"), ask the user to reconnect it; after a reconnect, open a new tab. Navigating the tab mid-run aborts the script. The JavaScript tool cuts its output at about 1,000 characters and blanks output that looks like cookies or query strings, so for a full batch save `window.__res` as a file through a Blob link with `download` set, then read it from the download folder with a shell. Download that JSON before running `__check(…, true)`: after a burst of screenshot downloads Chrome silently blocks further automatic downloads from the tab. |
 | Any agent with a shell on macOS (Codex, Gemini CLI, Claude Code without Chrome) | `scripts/browser_js.sh safari FILE-or-CODE` (or `chrome`) runs JavaScript in the front tab and prints the result. The user must open shodan.io as the front tab and allow it once: Safari > Settings > Advanced > "Show features for web developers", then Develop > "Allow JavaScript from Apple Events"; Chrome: View > Developer > "Allow JavaScript from Apple Events". Tell the user in plain words that while this is on, any app allowed to automate the browser can run code in every logged-in tab, and that they should turn it off afterwards. |
 | Agents with computer use only | Open `https://www.shodan.io/search?query=<urlencoded>` and `https://www.shodan.io/host/<IP>` in the user's browser and read the pages: total results, each result's IP, operator, city, product, tags, and on the host page the Tags, open ports, hostnames and last-seen date. Save VNC screenshots with the browser's "Save image as" into the download folder as `shodan-<IP>-<n>.jpg`. Write what you read as the same JSON `shodan-hostcheck.js` produces (see its header) and import it. |
 
@@ -72,13 +72,36 @@ Raw port counts are useless: hosts that answer on every port and cloud ranges in
 
 Searches that came back empty or all honeypots in Sweden (late 2026): water and sewage words in titles or banners, ABB RTU560, SICAM, PcVue, Citect, iFIX, wind-turbine vendors, Kamstrup, Hirschmann, DNP3, Omron FINS, Red Lion, fuel tank gauges (`"IN-TANK INVENTORY"`).
 
+### Queries that fit on one page
+
+A free or Membership account sees only the first page of results (10 hits), so the best queries narrow a class down to one or a few pages. These gave 4 to 50 hits in Sweden on 2026-11-04, with real finds on page 1:
+
+| Query | Hits | What came up |
+|---|---|---|
+| `country:SE port:5900 "authentication disabled" has_screenshot:true` | 9 | Heating plants, heat pumps, pellet boilers, an HMI |
+| `country:SE "authentication disabled" has_screenshot:true -port:5900` | 48 | VNC on other ports, with screenshot |
+| `country:SE port:5901 "authentication disabled"` | 7 | Servers and a heating plant panel |
+| `country:SE "authentication disabled" port:5902,5903,5904,5905,5906,5800` | 9 | Mostly the same hosts again; check for new ones |
+| `country:SE "authentication disabled" "RFB 003.007"` | 5 | Old embedded VNC servers, often HMIs (Beijer iX, Mitsubishi GOT) |
+| `country:SE "authentication disabled" "Server Name: touch_"` | 4 | Pellet-boiler touch panels (`touch_002496…`) |
+| `country:SE port:9200 "read_me"` | 5 | Elasticsearch already emptied, tagged `compromised` |
+| `country:SE port:445 "Authentication: disabled" backup` | 7 | Home NAS boxes with open SMB |
+| `country:SE port:873 "@RSYNCD" backup` | 25 | rsync modules named backup; whether they need a password does not show |
+| `country:SE port:2375 "Docker"` | 10 | Docker API, almost all cloud |
+| `country:SE port:11211 "STAT pid"` | 33 | Memcached, cloud and honeypots |
+| `country:SE http.title:"Kibana"` | 32 | Mostly honeypots and mislabelled devices |
+
+Too broad to read on one page (hundreds or thousands of hits, volume only): `port:10250`, `port:5985`, `port:6443 "kubernetes"`, `port:5938`, `port:1883 "MQTT Connection Code: 0"`, `http.title:"Home Assistant"`, `"Grafana"`, `"Portainer"`, `"Node-RED"`, `"phpMyAdmin"`, `port:631 "CUPS"`, `port:548 "Netatalk"`. Narrow them with a banner string before reading. Empty in Sweden: `http.title:"Apache Guacamole"`, `port:9200 "cluster_name"`, `port:2049 "nfs"`, `"Dashboard [Jenkins]"`, `"read_me"` on 27017 and 5432, `"iX T"`.
+
+Hosting ranges full of fake VNC screens (dozens of ports, many screenshots, joke server names) are traps or honeypots even without the tag; skip them.
+
 ### General (non-ICS) exposures
 
 Shodan prints its own tags in results and on host pages even on plans where the `tag:` filter is closed. **`compromised`** is the strongest general signal: an open database that has already been emptied, usually with a `read_me` index or collection holding a ransom note. That class is worth its own short report.
 
 | Query | Worth reporting |
 |---|---|
-| `country:SE port:9200 elastic -"security_exception"` | the ones tagged `compromised` |
+| `country:SE port:9200 "read_me"` (narrow) or `country:SE port:9200 elastic -"security_exception"` (wide) | the ones tagged `compromised` |
 | `country:SE port:6379 "redis_version"` | only if compromised and locally run, not cloud |
 | `country:SE "MongoDB Server Information"` | rarely |
 | `country:SE port:445 "Authentication: disabled" -"IPC$"` | maybe, as volume |
