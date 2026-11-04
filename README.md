@@ -1,4 +1,4 @@
-# shodan-cert-report
+# Shodan → CERT: report exposed control systems with your AI agent
 
 An agent skill for reporting exposed control systems to your national CERT. Your agent searches Shodan in your own logged-in browser tab, weeds out honeypots, judges severity, and writes a draft email with Shodan's own screenshots inline. You read the draft and send it.
 
