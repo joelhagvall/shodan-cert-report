@@ -1,0 +1,9 @@
+# Findings never belong in this repository
+*.eml
+*.jpg
+*.jpeg
+*.png
+out/
+shodan-out/
+__pycache__/
+.DS_Store
