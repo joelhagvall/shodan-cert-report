@@ -15,6 +15,7 @@ Find control systems and other urgent exposures in one country on Shodan, sort o
 - **Draft, never send.** The script writes an `.eml` file. The user reads it and sends it.
 - Do not compile who owns a private host (names in a KNX "Friendly Name", villa names). Report the IP, operator and what it is; the CERT and the operator find the subscriber.
 - Findings never go in a repository or a public post. The script keeps them under `~/.local/state/shodan-cert-report/` (or `$SHODAN_CERT_OUT`).
+- **Everything is saved locally, at once.** Every search batch, host check, screenshot and report goes into that folder: `batch/<date>-<label>.json` (save `window.__res` right after each batch, before the tab navigates or the next batch overwrites it), `hosts/` and `shots/` (through `import`), and `drafts/` (also a copy of any report written straight in a mail client or Gmail, as `.eml` or `.txt`). Results that live only in the browser tab are lost on the next navigation.
 - Go at a human pace: the scripts wait about a second between pages, and a session is a few dozen queries, not thousands.
 
 ## Check your own connection first
@@ -183,6 +184,6 @@ When the user wants the draft in Gmail:
 - `scripts/shodan-batch.js`: page script, `window.__run(queries)` fills `window.__res` with the total and the first page of results per query.
 - `scripts/shodan-hostcheck.js`: page script, `window.__check(ips, download)` fills `window.__hp` with honeypot flag, tags, ports, operator, city, hostnames and last seen per host, and optionally downloads the screenshots.
 - `scripts/browser_js.sh`: runs a page script or expression in Safari's or Chrome's front tab on macOS.
-- `scripts/shodan_cert.py`: `self`, `import`, `draft`. Keeps host checks in `hosts/`, screenshots in `shots/` and drafts in `drafts/` under the output folder.
+- `scripts/shodan_cert.py`: `self`, `import`, `draft`. Keeps host checks in `hosts/`, screenshots in `shots/` and drafts in `drafts/` under the output folder; search batches go in `batch/` beside them.
 - `tests/test_shodan_cert.py`: offline tests, including two that fail if a real IP or an unknown hostname lands in the repository.
 - `.githooks/pre-commit`: runs the tests before every commit (`git config core.hooksPath .githooks` once per clone).
