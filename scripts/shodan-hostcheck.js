@@ -39,6 +39,11 @@ window.__check = async (ips, download = false, delayMs = 1200) => {
       const ports = [...new Set([...text.matchAll(/\b(\d{1,5})\s*\/\s*(?:tcp|udp)\b/gi)].map(m => +m[1]))]
         .filter(p => p > 0 && p < 65536).sort((a, b) => a - b);
       const lastSeen = (text.match(/Last Seen:?\s*(\d{4}-\d{2}-\d{2})/i) || [])[1] || '';
+      // Per-service collection timestamps on the host page (one per open port). The earliest is the closest
+      // free proxy for how long the host has been exposed; true "first seen" needs the paywalled /history
+      // timeline (Membership for historical data), so it is not available here and is reported as ''.
+      const seen = [...new Set((html.match(/\b20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\b/g) || []).map(s => s.slice(0, 10)))].sort();
+      const seenSince = seen[0] || lastSeen;
       // Screenshots only: skip the small site favicons that sit in .favicon next to HTTP titles.
       const shots = [...doc.querySelectorAll('img[src^="data:image"]')]
         .filter(i => !i.closest('.favicon') && !(+i.getAttribute('width') && +i.getAttribute('width') <= 64))
@@ -55,6 +60,7 @@ window.__check = async (ips, download = false, delayMs = 1200) => {
       }
       window.__hp[ip] = {
         ip, honeypot: /honeypot/i.test(tags.join(' ') + ' ' + tagLine), tags, ports, lastSeen,
+        seenSince, seen, firstSeen: '',  // firstSeen needs the paywalled /history timeline; '' = unavailable
         org: rows['Organization'] || '', isp: rows['ISP'] || '', asn: rows['ASN'] || '',
         city: rows['City'] || '', country: rows['Country'] || '',
         hostnames: (rows['Hostnames'] || '').split(/\s+/).filter(Boolean),

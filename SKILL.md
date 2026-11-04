@@ -239,6 +239,8 @@ Location: Shodan's city for mobile operators' addresses is unreliable (one Swedi
 
 Reverse DNS, hostnames and the plant or device names in banners often name the owner better than the operator does. Put them in the report; that is exactly what the CERT cannot get from a bulk feed.
 
+Always carry the dates Shodan exposes for each finding. On this account that is **last seen** and, from the host check, `seenSince` (the earliest per-service collection date on the host page) — report it as "sedd sedan minst `<seenSince>`, senast `<lastSeen>`", not as a first-seen claim. Shodan's true **first seen** sits on the `/host/<ip>/history` timeline and is paywalled (Membership for historical data), so it is not available here; never invent it, and say "first seen okänt (kräver betald historik)" if asked. A date inside a banner (e.g. a controller's firmware date like `220221` = 2022-02-21) is the device's own date, not Shodan's — label it as such.
+
 ## Writing the report
 
 Write the body as plain text in the user's language (Swedish for CERT-SE). `{{host:IP}}` becomes the Shodan host link with that host's screenshots inline under it. A line that is only `**text**` becomes a bold heading. Links are kept only when they point to shodan.io; anything else is left as plain text, so the report never links to an exposed host.
@@ -288,7 +290,7 @@ When the user wants the draft in Gmail:
 ## Files
 
 - `scripts/shodan-batch.js`: page script, `window.__run(queries)` fills `window.__res` with the total and the first page of results per query.
-- `scripts/shodan-hostcheck.js`: page script, `window.__check(ips, download)` fills `window.__hp` with honeypot flag, tags, ports, operator, city, hostnames and last seen per host, and optionally downloads the screenshots.
+- `scripts/shodan-hostcheck.js`: page script, `window.__check(ips, download)` fills `window.__hp` with honeypot flag, tags, ports, operator, city, hostnames, last seen, `seen` (the per-service collection dates on the host page) and `seenSince` (the earliest of those) per host, and optionally downloads the screenshots. `firstSeen` is always `''`: Shodan's real first-seen lives on the `/host/<ip>/history` timeline, which answers "Membership required to view historical data" on this account, so it cannot be read passively here.
 - `scripts/browser_js.sh`: runs a page script or expression in Safari's or Chrome's front tab on macOS.
 - `scripts/cdp_eval.mjs`: runs a page script or expression in the shodan.io tab of a Chrome window started with `--remote-debugging-port` (node 22+ or bun).
 - `scripts/shodan_cert.py`: `self`, `import`, `draft`. Keeps host checks in `hosts/`, screenshots in `shots/` and drafts in `drafts/` under the output folder; search batches go in `batch/` beside them.
