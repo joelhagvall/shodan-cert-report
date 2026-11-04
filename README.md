@@ -36,8 +36,8 @@ It works in any agent that reads `SKILL.md` and can run a shell. The browser par
 - **Agents with computer use** read the Shodan pages directly.
 
 ```sh
-git clone https://github.com/<owner>/shodan-cert-report ~/.claude/skills/shodan-cert-report   # Claude Code
-git clone https://github.com/<owner>/shodan-cert-report ~/.codex/skills/shodan-cert-report    # Codex
+git clone https://github.com/joelhagvall/shodan-cert-report ~/.claude/skills/shodan-cert-report   # Claude Code
+git clone https://github.com/joelhagvall/shodan-cert-report ~/.codex/skills/shodan-cert-report    # Codex
 ```
 
 Then ask your agent something like "kolla shodan efter öppna VNC-paneler i Sverige och skriv ett utkast till CERT-SE".
