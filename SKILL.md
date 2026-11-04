@@ -213,6 +213,14 @@ The host-page parsing reads Shodan's HTML, which Shodan can change. As of Novemb
 
 ## Judging severity
 
+Classify every finding as one of three levels, and never let a lower level sound like a higher one. A count of search hits is never a count of vulnerabilities: a query that returns 185 results has found 185 banners, not 185 security holes.
+
+1. **Observed exposure** — a port or service is reachable (BACnet answers, a login page loads, SNMP replies). It says nothing on its own about a weakness. Most hits are only this.
+2. **Suspected vulnerability** — an exposure plus a weakness signal: no authentication, a password printed in the banner, end-of-life firmware, or a product version with a known CVE. Still not proven, because the skill never tests.
+3. **Confirmed compromise** — Shodan's own `compromised` tag, a ransom note (`read_me`), or a hostname such as HACKED. This is the only level that asserts the host is already owned.
+
+Write the level into the report in plain words and keep the passive disclaimer: the skill reads Shodan and never connects, so level 2 stays "suspected" until the owner confirms. In the batch script, `real` means "not honeypot, not cloud" — it is not a vulnerability verdict.
+
 Say plainly what is known and what is not. Order: open HMI with control and no password (VNC) > protocols with no authentication that take commands (IEC-104, Unitronics PCOM, S7, CODESYS v2) > serial servers with auth off or a password shown in the banner > login pages > building automation in bulk. Whether it is critical infrastructure is usually unknown: write "we do not know what it controls", list what it could be, and keep "urgent" out of the subject. One device of unknown purpose is not a crisis; phone the CERT if it must be seen the same day (CERT-SE listed 010-382 80 00 in late 2026; check cert.se for the current number, and cite the ticket).
 
 Location: Shodan's city for mobile operators' addresses is unreliable (one Swedish mobile range shows the same city wherever the device is). Say so in the report.
