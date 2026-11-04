@@ -94,8 +94,13 @@ A free or Membership account sees only the first page of results (10 hits), so t
 | `country:SE port:8291 "MikroTik" "6.4"` | 19 | RouterOS 6.40–6.42 with Winbox open; old, volume only |
 | `country:SE http.title:"Jupyter Notebook"` | 7 | Login pages (an open notebook has the title "Home Page…", which gave 0) |
 | `country:SE http.title:"VMware ESXi"` | 11 | Cloud and honeypots |
+| `"Regin" country:SE` | 633 | Regin building controllers (Rego 5200) answering Modbus with no login; too many for one page, report as volume |
+| `"Siemens, SIMATIC" country:SE` | 33 | Half honeypots (university ranges); the rest Siemens SCALANCE M industrial 4G routers on mobile operators answering SNMP, same class as the Advantech ICRs |
+| `http.title:"HMI" country:SE` | 35 | Login pages on mobile ranges: Siemens SIMATIC HMI web, Kaeser Sigma Air Manager; low |
 
 Too broad to read on one page (hundreds or thousands of hits, volume only): `port:10250`, `port:5985`, `port:6443 "kubernetes"`, `port:5938`, `port:1883 "MQTT Connection Code: 0"`, `http.title:"Home Assistant"`, `"Grafana"`, `"Portainer"`, `"Node-RED"`, `"phpMyAdmin"`, `port:631 "CUPS"`, `port:548 "Netatalk"`, `port:5060 "SIP/2.0"`, `http.title:"RabbitMQ Management"`, `http.title:"Proxmox"` (login pages), `"MiniServ"` (Webmin), `port:7547`. Narrow them with a banner string before reading. Empty in Sweden: `http.title:"Apache Guacamole"`, `port:9200 "cluster_name"`, `port:2049 "nfs"`, `"Dashboard [Jenkins]"`, `"read_me"` on 27017 and 5432, `"iX T"`. Banner strings that match nothing on Shodan: `"Webmin"` (use `"MiniServ"`), `"TR-069"`, `"sysDescr"` (SNMP shows `Description:`).
+
+Shodan has no `OR`: a query with it fails with "Invalid search query". Run each term on its own; ports take a comma list (`port:502,102`). `org:"<company>"` (Vattenfall, Fortum, Swedavia, Trafikverket) shows only the company's own edge (Citrix, Check Point, IIS logins), not its plants, which usually sit behind mobile operators. Also empty in Sweden: `"Nordex Control"`, `port:2404 "IEC"`, `port:102 "S7"`, `port:502 product:modbus`, `"Server: CarelDataServer"`, `"mikrotik" streetlight`.
 
 Hosting ranges full of fake VNC screens (dozens of ports, many screenshots, joke server names) are traps or honeypots even without the tag; skip them.
 
