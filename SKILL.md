@@ -261,6 +261,10 @@ python3 scripts/shodan_cert.py draft body.txt --to cert@cert.se --subject 'Expon
 
 Opening the `.eml`: Outlook and Thunderbird open it as an editable draft (`X-Unsent: 1`). In Apple Mail, open it and use Message > Send Again. Gmail's web client cannot import an `.eml`; see below.
 
+### Drafting through a Gmail MCP connector
+
+Some agents draft straight into Gmail with a connector (`create_draft`/`update_draft`) instead of an `.eml`. That is fine — it is still a draft the user sends — but Gmail rewrites every URL-like token in the body (both the plain-text and the auto-generated HTML part) into a `https://www.google.com/url?q=…` redirect. It does this to full URLs **and to bare dotted domains** (`example.com`, a reverse-DNS name), at save time, so the sent mail would show Google links, not Shodan ones. A bare IPv4 address (`203.0.113.9`) is left alone. So in a Gmail-connector draft, do not put a clickable `shodan.io` link or any hostname in the body: give the bare IP and the last-seen date, say "slå upp IP:n på Shodan för detaljerna", and let the recipient look up the host page and hostnames themselves. Read the draft back (`get_draft`) and confirm no `google.com/url` appears before telling the user it is ready. (When driving the Gmail **web compose** in a browser instead, you can keep real links — see below.)
+
 ### Gmail web compose (only for agents that drive the browser)
 
 When the user wants the draft in Gmail:
