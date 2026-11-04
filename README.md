@@ -29,10 +29,11 @@ Heating panels with no password, PLCs that take commands from anyone, databases 
 
 ## Install
 
-It works in any agent that reads `SKILL.md` and can run a shell. The browser part works three ways:
+It works in any agent that reads `SKILL.md` and can run a shell. The browser part works four ways:
 
 - **Claude Code** with the Claude in Chrome extension.
 - **Codex, Gemini CLI or others on macOS** through `scripts/browser_js.sh`, which runs the page scripts in Safari's or Chrome's front tab via AppleScript. It needs "Allow JavaScript from Apple Events" switched on in the browser. Turn it off afterwards, because while it is on, any app allowed to automate the browser can run code in your logged-in tabs.
+- **Any agent with a shell and Chrome** through `scripts/cdp_eval.mjs`, which runs the page scripts in a separate Chrome window started with its own profile and `--remote-debugging-port`. You log in to Shodan in that window once. Close it when you are done, because while it is open any program on your computer can control it through the port.
 - **Agents with computer use** read the Shodan pages directly.
 
 ```sh
