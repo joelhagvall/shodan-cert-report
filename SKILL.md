@@ -108,6 +108,7 @@ Searches that came back empty or all honeypots in Sweden (late 2026): water and 
 | `country:SE "Westermo"` | 38 | Westermo MRD-455 industrial 4G routers with a telnet login prompt, all on one mobile operator's M2M range |
 | `country:SE "Tridium"` | 4 | Niagara 4 building automation |
 | `country:SE "Mitsubishi Electric"` | 2 | Mitsubishi GOT heat-pump panels with open VNC |
+| `country:SE http.title:"StoreView"` | 98 | Danfoss StoreView / AK-SM800A supermarket refrigeration controllers (self-signed cert `SelfSigned-DanfossSM800A`), many tagged `eol-product`. The exact class attacked in the Oct–Nov 2026 campaign against Swedish grocery cold systems (ICA Sjöbo). `http.title:"Danfoss"` (102) adds Danfoss Drive Monitor VFDs; `"AKSM"` (86) matches via the cert. Over one page — slice with `org:`/`city:`. Time-sensitive: report to CERT-SE, and the plain `"Danfoss"`/`"AK-SM"`/`"StoreView"` brand words all give 0 (the title and cert strings are what match) |
 | `country:SE "Sauter"` | 5 | SAUTER BACnet automation stations; 4 real hosts |
 | `country:SE "Distech Controls"` | 4 | Distech BACnet building controllers |
 | `country:SE "SAIA PCD"` | 127 | Nine of ten on page 1 are honeypots; one real Saia PCD web server |
