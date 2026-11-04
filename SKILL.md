@@ -179,4 +179,5 @@ When the user wants the draft in Gmail:
 - `scripts/shodan-hostcheck.js`: page script, `window.__check(ips, download)` fills `window.__hp` with honeypot flag, tags, ports, operator, city, hostnames and last seen per host, and optionally downloads the screenshots.
 - `scripts/browser_js.sh`: runs a page script or expression in Safari's or Chrome's front tab on macOS.
 - `scripts/shodan_cert.py`: `self`, `import`, `draft`. Keeps host checks in `hosts/`, screenshots in `shots/` and drafts in `drafts/` under the output folder.
-- `tests/test_shodan_cert.py`: offline tests, including one that fails if a real IP lands in the repository.
+- `tests/test_shodan_cert.py`: offline tests, including two that fail if a real IP or an unknown hostname lands in the repository.
+- `.githooks/pre-commit`: runs the tests before every commit (`git config core.hooksPath .githooks` once per clone).

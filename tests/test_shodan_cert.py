@@ -160,6 +160,23 @@ class NoFindingsInRepo(unittest.TestCase):
                 self.assertTrue(ip.startswith(doc) or ip in public, f"{ip} in {path.relative_to(ROOT)}")
 
 
+    def test_only_known_hostnames(self):
+        # A finding's reverse DNS or domain (its reverse DNS name) must not land here either.
+        # Allowed: the services the skill uses, the CERT, and example domains (RFC 2606).
+        tlds = "se|com|net|org|io|nu|lt|dk|no|fi|gov|dev|cloud|app|me|eu|de|uk|info|ru|ai"
+        pattern = re.compile(rf"\b(?:[a-z0-9-]+\.)+(?:{tlds})\b", re.I)
+        allowed = ("shodan.io", "cert.se", "github.com", "api.ipify.org", "google.com", "amazon.com",
+                   "example.com", "example.net", "example.org")
+        for path in ROOT.rglob("*"):
+            if ".git" in path.parts or path.suffix not in {".md", ".py", ".txt", ".json", ".js", ".sh"} \
+                    or not path.is_file():
+                continue
+            for name in pattern.findall(path.read_text()):
+                low = name.lower()
+                self.assertTrue(any(low == a or low.endswith("." + a) for a in allowed),
+                                f"{name} in {path.relative_to(ROOT)}: findings never go in this repository")
+
+
 class NoPlaceholders(unittest.TestCase):
     """Install commands must work when copied: no <owner>-style placeholders in the README."""
 

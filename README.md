@@ -46,6 +46,7 @@ Requirements: Python 3.9+ (standard library only) and a Shodan account logged in
 
 ```sh
 python3 -m unittest discover -s tests     # offline
+git config core.hooksPath .githooks       # once per clone: commits run the tests first
 ```
 
 ## Rules
