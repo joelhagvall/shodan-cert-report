@@ -90,8 +90,12 @@ A free or Membership account sees only the first page of results (10 hits), so t
 | `country:SE port:2375 "Docker"` | 10 | Docker API, almost all cloud |
 | `country:SE port:11211 "STAT pid"` | 33 | Memcached, cloud and honeypots |
 | `country:SE http.title:"Kibana"` | 32 | Mostly honeypots and mislabelled devices |
+| `country:SE port:161 "public"` | 75 | Advantech ICR industrial 4G routers (pump stations, substations) answering SNMP community `public`, some on 2021 firmware; report as a class |
+| `country:SE port:8291 "MikroTik" "6.4"` | 19 | RouterOS 6.40–6.42 with Winbox open; old, volume only |
+| `country:SE http.title:"Jupyter Notebook"` | 7 | Login pages (an open notebook has the title "Home Page…", which gave 0) |
+| `country:SE http.title:"VMware ESXi"` | 11 | Cloud and honeypots |
 
-Too broad to read on one page (hundreds or thousands of hits, volume only): `port:10250`, `port:5985`, `port:6443 "kubernetes"`, `port:5938`, `port:1883 "MQTT Connection Code: 0"`, `http.title:"Home Assistant"`, `"Grafana"`, `"Portainer"`, `"Node-RED"`, `"phpMyAdmin"`, `port:631 "CUPS"`, `port:548 "Netatalk"`. Narrow them with a banner string before reading. Empty in Sweden: `http.title:"Apache Guacamole"`, `port:9200 "cluster_name"`, `port:2049 "nfs"`, `"Dashboard [Jenkins]"`, `"read_me"` on 27017 and 5432, `"iX T"`.
+Too broad to read on one page (hundreds or thousands of hits, volume only): `port:10250`, `port:5985`, `port:6443 "kubernetes"`, `port:5938`, `port:1883 "MQTT Connection Code: 0"`, `http.title:"Home Assistant"`, `"Grafana"`, `"Portainer"`, `"Node-RED"`, `"phpMyAdmin"`, `port:631 "CUPS"`, `port:548 "Netatalk"`, `port:5060 "SIP/2.0"`, `http.title:"RabbitMQ Management"`, `http.title:"Proxmox"` (login pages), `"MiniServ"` (Webmin), `port:7547`. Narrow them with a banner string before reading. Empty in Sweden: `http.title:"Apache Guacamole"`, `port:9200 "cluster_name"`, `port:2049 "nfs"`, `"Dashboard [Jenkins]"`, `"read_me"` on 27017 and 5432, `"iX T"`. Banner strings that match nothing on Shodan: `"Webmin"` (use `"MiniServ"`), `"TR-069"`, `"sysDescr"` (SNMP shows `Description:`).
 
 Hosting ranges full of fake VNC screens (dozens of ports, many screenshots, joke server names) are traps or honeypots even without the tag; skip them.
 
