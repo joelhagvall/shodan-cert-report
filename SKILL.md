@@ -75,7 +75,7 @@ Searches that came back empty or all honeypots in Sweden (late 2026): water and 
 
 ### Queries that fit on one page
 
-A free or Membership account sees only the first page of results (10 hits), so the best queries narrow a class down to one or a few pages. These gave 4 to 50 hits in Sweden on 2026-11-04, with real finds on page 1:
+`shodan-batch.js` reports `unique` (distinct IPs on page 1) and `real` (distinct IPs tagged neither honeypot nor cloud) per query; judge a query by `real`, not by Shodan's total: honeypots repeat on page 1 and inflate it. A free or Membership account sees only the first page of results (10 hits), so the best queries narrow a class down to one or a few pages. These gave 4 to 50 hits in Sweden on 2026-11-04, with real finds on page 1:
 
 | Query | Hits | What came up |
 |---|---|---|
@@ -106,10 +106,14 @@ A free or Membership account sees only the first page of results (10 hits), so t
 | `country:SE "Westermo"` | 38 | Westermo MRD-455 industrial 4G routers with a telnet login prompt, all on one mobile operator's M2M range |
 | `country:SE "Tridium"` | 4 | Niagara 4 building automation |
 | `country:SE "Mitsubishi Electric"` | 2 | Mitsubishi GOT heat-pump panels with open VNC |
+| `country:SE "Sauter"` | 5 | SAUTER BACnet automation stations; 4 real hosts |
+| `country:SE "Distech Controls"` | 4 | Distech BACnet building controllers |
+| `country:SE "SAIA PCD"` | 127 | Nine of ten on page 1 are honeypots; one real Saia PCD web server |
+| `country:SE "Ewon"` | 85 | Almost all honeypots; one real Ewon remote-access router on a mobile range |
 
 Too broad to read on one page (hundreds or thousands of hits, volume only): `port:10250`, `port:5985`, `port:6443 "kubernetes"`, `port:5938`, `port:1883 "MQTT Connection Code: 0"`, `http.title:"Home Assistant"`, `"Grafana"`, `"Portainer"`, `"Node-RED"`, `"phpMyAdmin"`, `port:631 "CUPS"`, `port:548 "Netatalk"`, `port:5060 "SIP/2.0"`, `http.title:"RabbitMQ Management"`, `http.title:"Proxmox"` (login pages), `"MiniServ"` (Webmin), `port:7547`. Narrow them with a banner string before reading. Empty in Sweden: `http.title:"Apache Guacamole"`, `port:9200 "cluster_name"`, `port:2049 "nfs"`, `"Dashboard [Jenkins]"`, `"read_me"` on 27017 and 5432, `"iX T"`. Banner strings that match nothing on Shodan: `"Webmin"` (use `"MiniServ"`), `"TR-069"`, `"sysDescr"` (SNMP shows `Description:`).
 
-Shodan has no `OR`: a query with it fails with "Invalid search query". Run each term on its own; ports take a comma list (`port:502,102`). `org:"<company>"` (Vattenfall, Fortum, Swedavia, Trafikverket) shows only the company's own edge (Citrix, Check Point, IIS logins), not its plants, which usually sit behind mobile operators. Also empty in Sweden: `"Nordex Control"`, `port:2404 "IEC"`, `port:102 "S7"`, `port:502 product:modbus`, `"Server: CarelDataServer"`, `"mikrotik" streetlight`, `"IEC 61850"`, `port:102 "MMS"`, `"OpenADR"`, `"Sparkplug"`, `port:1883 "spBv1.0"`, `"DLMS"`, `port:4059`, `"Building Management"`, `"ocpp1.6"`, `"B&R Automation"`, `"Danfoss"`, `"Trend Controls"`, `"HMS Networks"`. Volume or noise: `"Schneider Electric"` (145, half cloud honeypots), `"Teltonika"` (113), `"WAGO"` (68, mostly honeypots), `"Loxone"` (294, cloud hosts all named "some name").
+Shodan has no `OR`: a query with it fails with "Invalid search query". Run each term on its own; ports take a comma list (`port:502,102`). `org:"<company>"` (Vattenfall, Fortum, Swedavia, Trafikverket) shows only the company's own edge (Citrix, Check Point, IIS logins), not its plants, which usually sit behind mobile operators. Also empty in Sweden: `"Nordex Control"`, `port:2404 "IEC"`, `port:102 "S7"`, `port:502 product:modbus`, `"Server: CarelDataServer"`, `"mikrotik" streetlight`, `"IEC 61850"`, `port:102 "MMS"`, `"OpenADR"`, `"Sparkplug"`, `port:1883 "spBv1.0"`, `"DLMS"`, `port:4059`, `"Building Management"`, `"ocpp1.6"`, `"B&R Automation"`, `"Danfoss"`, `"Trend Controls"`, `"HMS Networks"`, `"Siemens Desigo"`, `"Delta Controls"`, `"Hilscher"`, `"ProSoft"`, `"ICP DAS"`, `"Red Lion Controls"`; `"Advantech"` finds only an MQTT broker (the routers show up with `port:161 "public"`). Volume or noise: `"Schneider Electric"` (145, half cloud honeypots), `"Teltonika"` (113), `"WAGO"` (68, mostly honeypots), `"Loxone"` (294, cloud hosts all named "some name").
 
 Hosting ranges full of fake VNC screens (dozens of ports, many screenshots, joke server names) are traps or honeypots even without the tag; skip them.
 
