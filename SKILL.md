@@ -32,6 +32,8 @@ It asks api.ipify.org for the public IP (or takes `--ip`) and looks it up in `in
 
 The user must be logged in to shodan.io in the browser. A free account sees little; the one-time Membership unlocks filters such as `country:`, `port:` and `has_screenshot:` on the website. `tag:` and `vuln:` need higher plans.
 
+**Check the login before the first query.** Open `https://www.shodan.io/dashboard` in the tab you will use and confirm that it shows the dashboard and not `/login`, and that the browser tool answers at all. Stop and ask the user to log in (and, in Claude in Chrome, to drag their logged-in tab into the Claude tab group) when the extension is not connected, the browser is not running, the page redirects to `/login`, or a search answers "Please log in to use search filters". Wait for them before you run any search or host check. Do not find this out by running queries.
+
 The two page scripts do the reading: `scripts/shodan-batch.js` runs a list of searches, `scripts/shodan-hostcheck.js` reads the host page of each IP. Both start in the background and are polled, because browser tools time out on calls longer than about 25 seconds. How to run them depends on the agent:
 
 | Agent | How |
