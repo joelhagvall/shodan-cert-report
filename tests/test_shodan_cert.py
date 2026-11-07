@@ -165,7 +165,7 @@ class NoFindingsInRepo(unittest.TestCase):
         # Allowed: the services the skill uses, the CERT, and example domains (RFC 2606).
         tlds = "se|com|net|org|io|nu|lt|dk|no|fi|gov|dev|cloud|app|me|eu|de|uk|info|ru|ai"
         pattern = re.compile(rf"\b(?:[a-z0-9-]+\.)+(?:{tlds})\b", re.I)
-        allowed = ("shodan.io", "cert.se", "github.com", "api.ipify.org", "google.com", "amazon.com",
+        allowed = ("shodan.io", "cert.se", "cisa.gov", "github.com", "api.ipify.org", "google.com", "amazon.com",
                    "example.com", "example.net", "example.org")
         for path in ROOT.rglob("*"):
             if ".git" in path.parts or path.suffix not in {".md", ".py", ".txt", ".json", ".js", ".sh"} \

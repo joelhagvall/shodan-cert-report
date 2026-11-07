@@ -34,6 +34,8 @@ The user must be logged in to shodan.io in the browser. A free account sees litt
 
 **Check the login before the first query.** Open `https://www.shodan.io/dashboard` in the tab you will use and confirm that it shows the dashboard and not `/login`, and that the browser tool answers at all. Stop and ask the user to log in (and, in Claude in Chrome, to drag their logged-in tab into the Claude tab group) when the extension is not connected, the browser is not running, the page redirects to `/login`, or a search answers "Please log in to use search filters". Wait for them before you run any search or host check. Do not find this out by running queries.
 
+Before asking the user to log in or reconnect, check whether `~/.local/state/shodan-cert-report/chrome-profile` exists. If it does, start that window with the debugging port (see the table below) and open the dashboard there. That profile usually still holds a Shodan session, so the user does not have to log in. Never type the user's Shodan password, and never keep it in a credentials file.
+
 The two page scripts do the reading: `scripts/shodan-batch.js` runs a list of searches, `scripts/shodan-hostcheck.js` reads the host page of each IP. Both start in the background and are polled, because browser tools time out on calls longer than about 25 seconds. How to run them depends on the agent:
 
 | Agent | How |
@@ -290,6 +292,7 @@ Med vänliga hälsningar
 python3 scripts/shodan_cert.py draft body.txt --to cert@cert.se --subject 'Exponerade styrsystem i Sverige'
 ```
 
+- A host outside the country you search goes to its own national CERT (US: CISA, report@cisa.gov), with the abuse contact from whois for its ASN in copy. For a reassigned block, the downstream owner comes from the parent's rwhois, not the national CERT you usually mail.
 - Send separate reports per class when one class is clearly more urgent (open control panels on their own, the rest as a follow-up).
 - **Follow-ups go on the ticket.** The CERT answers with a ticket tag in the subject (CERT-SE: `[CERT-SE #NNNNNN]`). Reply on that thread with the tag in the subject. CERT-SE's normal reply is a ticket number and "we will come back if we have follow-up questions"; that is not a brush-off.
 - Correct earlier claims openly in a follow-up when new data changes them (owner, honeypot, location).
