@@ -89,7 +89,7 @@ Searches that came back empty or all honeypots in Sweden (late 2026): water and 
 | `country:SE port:5901 "authentication disabled"` | 7 | Servers and a heating plant panel |
 | `country:SE "authentication disabled" port:5902,5903,5904,5905,5906,5800` | 9 | Mostly the same hosts again; check for new ones |
 | `country:SE "authentication disabled" "RFB 003.007"` | 5 | Old embedded VNC servers, often HMIs (Beijer iX, Mitsubishi GOT) |
-| `country:SE "authentication disabled" "Server Name: touch_"` | 4 | Pellet-boiler touch panels (`touch_002496…`) |
+| `country:SE "authentication disabled" "Server Name: touch_"` | 4 | Pellet-boiler touch panels |
 | `country:SE port:9200 "read_me"` | 5 | Elasticsearch already emptied, tagged `compromised` |
 | `country:SE port:445 "Authentication: disabled" backup` | 7 | Home NAS boxes with open SMB |
 | `country:SE port:873 "@RSYNCD" backup` | 25 | rsync modules named backup; whether they need a password does not show |
@@ -112,7 +112,7 @@ Searches that came back empty or all honeypots in Sweden (late 2026): water and 
 | `country:SE "Westermo"` | 38 | Westermo MRD-455 industrial 4G routers with a telnet login prompt, all on one mobile operator's M2M range |
 | `country:SE "Tridium"` | 4 | Niagara 4 building automation |
 | `country:SE "Mitsubishi Electric"` | 2 | Mitsubishi GOT heat-pump panels with open VNC |
-| `country:SE http.title:"StoreView"` | 98 | Danfoss StoreView / AK-SM800A supermarket refrigeration controllers (self-signed cert `SelfSigned-DanfossSM800A`), many tagged `eol-product`. The exact class attacked in the Oct–Nov 2026 campaign against Swedish grocery cold systems (ICA Sjöbo). `http.title:"Danfoss"` (102) adds Danfoss Drive Monitor VFDs; `"AKSM"` (86) matches via the cert. Over one page — slice with `org:`/`city:`. Time-sensitive: report to CERT-SE, and the plain `"Danfoss"`/`"AK-SM"`/`"StoreView"` brand words all give 0 (the title and cert strings are what match) |
+| `country:SE http.title:"StoreView"` | 98 | Danfoss StoreView / AK-SM800A supermarket refrigeration controllers (self-signed cert `SelfSigned-DanfossSM800A`), many tagged `eol-product`. The exact class attacked in the Oct–Nov 2026 campaign against Swedish grocery cold systems. `http.title:"Danfoss"` (102) adds Danfoss Drive Monitor VFDs; `"AKSM"` (86) matches via the cert. Over one page — slice with `org:`/`city:`. Time-sensitive: report to CERT-SE, and the plain `"Danfoss"`/`"AK-SM"`/`"StoreView"` brand words all give 0 (the title and cert strings are what match) |
 | `country:SE "Sauter"` | 5 | SAUTER BACnet automation stations; 4 real hosts |
 | `country:SE "Distech Controls"` | 4 | Distech BACnet building controllers |
 | `country:SE "SAIA PCD"` | 127 | Nine of ten on page 1 are honeypots; one real Saia PCD web server |
@@ -174,14 +174,14 @@ A third council round on 2026-11-04 looked for open control panels (VNC/remote s
 | Query | Hits | What came up |
 |---|---|---|
 | `country:SE "authentication disabled" port:5900 org:"Telia Network Services"` | 5 | Mitsubishi GOT heat-pump panels and `touch_` boiler panels, open VNC with control, on Telia mobile |
-| `country:SE "authentication disabled" has_screenshot:true port:5901,5902,5903` | 9 | VNC with no password and a screenshot on 5901–5903; includes a real Swedish industrial HMI (`Huvudmeny … Laboratoriekyl`) |
+| `country:SE "authentication disabled" has_screenshot:true port:5901,5902,5903` | 9 | VNC with no password and a screenshot on 5901–5903; includes a real Swedish industrial HMI |
 | `country:SE "Windows CE" "Remote Display"` | 36 | Beckhoff and Freescale HMIs answering Windows CE Remote Display (remote screen, no login); device IDs name automation stations |
 | `country:SE port:9200 "read_me" -cloud` | 6 | Elasticsearch already emptied, tagged `compromised`, on home/business ISPs (Bredband2, Tele2, Ownit), not cloud |
 | `country:SE "HACKED"` | 8 | Ubiquiti devices tagged `compromised`, hostname set to HACKED, on consumer ISPs |
-| `country:SE "meow"` | 10 | Includes a `compromised` MongoDB (the "meow" wipe) on Bahnhof; the rest Minecraft servers |
-| `country:SE port:27017 "WARNING" org:"Bahnhof AB"` | 2 | MongoDB with `Authentication partially enabled` on Bahnhof |
-| `country:SE port:873 "@RSYNCD" "photos"` | 1 | Open rsync module `Backup Drive D:` with a Photos share, `read only = false` (writable), on Bahnhof residential |
-| `country:SE port:445 "Authentication: disabled" "photos"` | 3 | Open SMB with photo shares on Tele2 residential; `"ekonomi"` gives 1 on QuickNet |
+| `country:SE "meow"` | 10 | Includes a `compromised` MongoDB (the "meow" wipe); the rest Minecraft servers |
+| `country:SE port:27017 "WARNING" org:"Bahnhof AB"` | 2 | MongoDB with `Authentication partially enabled` |
+| `country:SE port:873 "@RSYNCD" "photos"` | 1 | Open writable rsync module with a Photos share on a residential line |
+| `country:SE port:445 "Authentication: disabled" "photos"` | 3 | Open SMB with photo shares on residential lines; `"ekonomi"` gives 1 |
 | `country:SE port:21 "Anonymous" "documents"` | 6 | AS/400 QTCP FTP servers (anonymous rejected, but they name the host and org) |
 
 Lesson from this round: the free/Membership account will not combine `has_screenshot:` with both `product:` and `org:` — those return 0, so screenshot queries take at most one extra filter. VNC screen text and panel words (`"Värmepump"`, `"brännare"`, `port:5900 "NIBE"`/`"Regin"`/`"Thermia"`) are not indexed, so a heat-pump panel is found by its VNC server name or the screenshot, not by a banner word. Too broad or cloud/honeypot here: `port:3389 … has_screenshot:true` (941), `port:8086 "X-Influxdb-Version"` (251), `port:6379 "redis_mode"` (345), `port:27017 "wiredTiger"` (341), `http.title:"noVNC"` (28, mostly cloud), `port:5984 "CouchDB"` (46, cloud and honeypots). Empty: `port:9042 "Cassandra"`, `port:2049 "Number of entries"`, `port:5433 "PostgreSQL"`, `port:5432 "AuthenticationFailurePacket"`, `http.title:"WebVisu"`, `port:9200 "You Know, for Search"`.
@@ -190,11 +190,11 @@ A fourth council round on 2026-11-04 tried to tie critical infrastructure to a *
 
 | Query | Hits | What came up |
 |---|---|---|
-| `country:SE org:"Stockholm Stadsnät FTTH" port:502,47808` | 60 | Building automation on Stockholm's municipal fibre: Regin REGO5200 heat-pump controllers and Siemens BACnet stations (`Object Name: Site1'AS01`) in Stockholm/Solna. The operator is named; the end device is a building's, so it is still the stadsnät's customer, not the stadsnät itself |
-| `country:SE org:"GlobalConnect" port:502,102,2404,47808` | 5 | ICS on a named carrier: a Procon Mod-Mux TCP 16-channel digital-I/O module (Halmstad), a Distech Controls BACnet station (Växjö), and a Modbus host whose reverse DNS is a company's own mail domain — the one case here where the end owner is named |
-| `country:SE org:"Telenor" port:502 "DPR_"` | 3 | District-heating controllers incl. one labelled `Master DPR_146` (a central, not just a substation) |
+| `country:SE org:"Stockholm Stadsnät FTTH" port:502,47808` | 60 | Building automation on Stockholm's municipal fibre: Regin REGO5200 heat-pump controllers and Siemens BACnet stations. The operator is named; the end device is a building's, so it is still the stadsnät's customer, not the stadsnät itself |
+| `country:SE org:"GlobalConnect" port:502,102,2404,47808` | 5 | ICS on a named carrier, including a Modbus host whose reverse DNS names a company |
+| `country:SE org:"Telenor" port:502 "DPR_"` | 3 | District-heating controllers including a central, not just substations |
 | `country:SE "Pannrum"` | 18 | AVTECH cameras/DVRs (CVE-2018-18441) named "Pannrum" on regional energy-ISPs (Sandviken Energi, Karlsborgs Energi, Fiberstaden); the hostnames are `customer.*`, so they are broadband customers, not the energy company's own kit |
-| `country:SE ssl:"Tekniska Verken"` | 12 | A utility's own web edge (a brand site, IIS); names the company but is not a plant. Same for `ssl:"Ellevio"` (15, incl. an EMS endpoint), `ssl:"Vattenfall"` (38), `ssl:"E.ON"` (57) |
+| `country:SE ssl:"Tekniska Verken"` | 12 | A utility's own web edge (a brand site, IIS); names the company but is not a plant. Same for `ssl:"Ellevio"` (15), `ssl:"Vattenfall"` (38), `ssl:"E.ON"` (57) |
 
 Lesson: the only reliable organisation handle on Shodan here is `org:` (the ISP or municipal-fibre operator) and `ssl:`/hostname on a company's own web edge. For the ICS itself, the owner stays unknown, so a device on a carrier or stadsnät network is a CERT report (the operator reaches the subscriber), not a direct-to-owner mail — write directly only when a hostname or certificate names the company that owns the device (e.g. a Modbus host at a company's own domain). `ssl:"kommun"` is 2,210 (far too broad); `org:"<utility>"` on the utility's own ASN shows only office edge, not plants.
 
